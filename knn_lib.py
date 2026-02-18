@@ -13,6 +13,15 @@ from sklearn.feature_selection import SelectKBest, f_classif
 url = 'training_data_VT2026.csv'
 bikes = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
 
+bikes["bad_conditions"] = np.where(
+    (bikes["precip"] > 1) |
+    (bikes["snowdepth"] > 0) |
+    (bikes["windspeed"] > 30) |
+    (bikes["visibility"] < 14),
+    1,  # bad condition
+    0   # good condition
+)
+
 np.random.seed(0)
 
 trainI = np.random.choice(bikes.shape[0], size=800, replace=False)
@@ -20,12 +29,13 @@ trainIndex = bikes.index.isin(trainI)
 train = bikes.iloc[trainIndex]
 test = bikes.iloc[~trainIndex]
 
+
+
 features = [
     "hour_of_day","day_of_week","month",
     "holiday","weekday","summertime",
     "temp","dew","humidity",
-    "precip","snowdepth",
-    "windspeed","cloudcover","visibility"
+    "bad_conditions","cloudcover"
 ] #Removed "snow"
 
 X_train = train[features]
