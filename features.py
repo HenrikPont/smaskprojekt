@@ -41,10 +41,11 @@ def combined_features():
     pca_features = features[["temp", "dew", "humidity"]]
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(pca_features)
-    pca = PCA(n_components=2)
+    pca = PCA(n_components=3)
     components = pca.fit_transform(X_scaled)
     features["weather_pca1"] = components[:, 0]
     features["weather_pca2"] = components[:, 1]
+    features["weather_pca3"] = components[:, 2]
     print("Explained variance ratio:", pca.explained_variance_ratio_)
 
     #features["heat_index"] = heat_index(features["temp"], features["humidity"])
