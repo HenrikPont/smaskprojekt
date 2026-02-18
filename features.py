@@ -31,8 +31,8 @@ def combined_features():
     features["bad_conditions"] = np.where(
         (features["precip"] > 1) |
         (features["snowdepth"] > 0) |
-        (features["windspeed"] > 30) |
-        (features["visibility"] < 14),
+        (features["windspeed"] > 32) |
+        (features["visibility"] < 16),
         1,  # bad condition
         0   # good condition
     )
@@ -47,6 +47,15 @@ def combined_features():
     features["weather_pca2"] = components[:, 1]
     features["weather_pca3"] = components[:, 2]
     print("Explained variance ratio:", pca.explained_variance_ratio_)
+
+    features['hour_sin'] = np.sin(2*np.pi*features['hour_of_day'] /24)
+    features['hour_cos'] = np.cos(2*np.pi*features['hour_of_day'] /24)
+
+    features['month_sin'] = np.sin(2*np.pi*(features['month']-1) /12)
+    features['month_cos'] = np.cos(2*np.pi*(features['month']-1) /12)
+
+    features['day_sin'] = np.sin(2*np.pi*(features['day_of_week']) /7)
+    features['day_cos'] = np.cos(2*np.pi*(features['day_of_week']) /7)
 
     #features["heat_index"] = heat_index(features["temp"], features["humidity"])
 

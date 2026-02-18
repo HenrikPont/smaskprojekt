@@ -27,7 +27,8 @@ test = bikes.iloc[~trainIndex]
 
 
 features = [
-    "weather_pca1", "weather_pca2", "bad_conditions", "summertime", "hour_of_day"
+    #"weather_pca1", "weather_pca2", "bad_conditions", "summertime", "hour_cos", "hour_sin", "day_sin", "day_cos", "month_sin", "month_cos", "weekday"
+    "weather_pca1", "weather_pca2", "bad_conditions", "summertime", "hour_cos", "hour_sin", "day_sin", "day_cos"
 ] #Removed "snow"
 
 X_train = train[features]
@@ -44,8 +45,8 @@ pipe = Pipeline([
 ])
 
 param_grid = {
-    "select__k": [1, 2, 3, 4, 5],
-    "knn__n_neighbors": [5, 7, 9, 10, 11, 13, 15, 21, 31],
+    "select__k": [8],#range(1, len(features)),
+    "knn__n_neighbors": [5, 7, 9, 10, 11, 13, 15, 21, 23, 25, 27, 31],
     "knn__weights": ["uniform", "distance"],
     "knn__metric": ["euclidean", "manhattan"]
 }
