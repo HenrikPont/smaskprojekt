@@ -9,6 +9,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.decomposition import PCA
 
 url = 'training_data_VT2026.csv'
 features = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
@@ -36,6 +37,16 @@ def combined_features():
         0   # good condition
     )
 
-    features["heat_index"] = heat_index(features["temp"], features["humidity"])
+
+    pca_features = features[["temp", "dew", "humidity"]]
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(pca_features)
+    pca = PCA(n_components=2)
+    components = pca.fit_transform(X_scaled)
+    features["weather_pca1"] = components[:, 0]
+    features["weather_pca2"] = components[:, 1]
+    print("Explained variance ratio:", pca.explained_variance_ratio_)
+
+    #features["heat_index"] = heat_index(features["temp"], features["humidity"])
 
     return features

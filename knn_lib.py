@@ -10,17 +10,12 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.feature_selection import SelectKBest, f_classif
 
+import features
+
 url = 'training_data_VT2026.csv'
 bikes = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
 
-bikes["bad_conditions"] = np.where(
-    (bikes["precip"] > 1) |
-    (bikes["snowdepth"] > 0) |
-    (bikes["windspeed"] > 30) |
-    (bikes["visibility"] < 14),
-    1,  # bad condition
-    0   # good condition
-)
+bikes = features.combined_features()
 
 np.random.seed(0)
 
@@ -32,10 +27,7 @@ test = bikes.iloc[~trainIndex]
 
 
 features = [
-    "hour_of_day","day_of_week","month",
-    "holiday","weekday","summertime",
-    "temp","dew","humidity",
-    "bad_conditions","cloudcover"
+    "weather_pca1", "weather_pca2", "bad_conditions"
 ] #Removed "snow"
 
 X_train = train[features]
