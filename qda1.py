@@ -8,6 +8,7 @@ import sklearn.discriminant_analysis as skl_da
 import sklearn.neighbors as skl_nb
 from sklearn import model_selection as ms
 from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV
 
 import features 
 
@@ -20,36 +21,32 @@ selected_features = [
     'day_sin', 'day_cos',
     'month_sin', 'month_cos',
     'bad_conditions',
-    'holiday',
-    'windspeed',
 ]
 
-X = bikes[selected_features]
-y = bikes['increase_stock']
 
-np.random.seed(0)
 
-trainI = np.random.choice(bikes.shape[0], size=800, replace=False)
-trainIndex = bikes.index.isin(trainI)
-train = bikes.iloc[trainIndex]
-test = bikes.iloc[~trainIndex]
+X_train, X_test, y_train, y_test = features.train_test_data(selected_features, random_state=0)
 
-X_train = train[selected_features]
-y_train = np.where(train['increase_stock'] == 'high_bike_demand', 1, 0)
-X_test = test[selected_features]
-y_test = np.where(test['increase_stock'] == 'high_bike_demand', 1, 0)
+#Gridsearch 
+reg_params = np.linspace(0, 0.5, 100) 
+priors = [[p, 1-p] for p in np.linspace(0.1, 0.9, 9)] + [None]  
 
-# 3. Splitta datan
-#X_train, X_test, y_train, y_test = ms.train_test_split(X, y, test_size=0.2, random_state=42)
+params = {
+    'reg_param': reg_params,
+    'priors': priors 
+}
 
-# 4. Skapa och träna QDA
-# Tips: Vi kan manuellt sätta "priors" om vi vill tvinga modellen 
-# att vara mer vaksam på "high_bike_demand"
-model = skl_da.QuadraticDiscriminantAnalysis()
-model.fit(X_train, y_train)
+qda = skl_da.QuadraticDiscriminantAnalysis()
 
-# 5. Utvärdera
-prediction = model.predict(X_test)
+grid = GridSearchCV(qda, params, cv=5, scoring='f1')
+grid.fit(X_train, y_train)
+
+print(f"Bästa parametrar: {grid.best_params_}")
+print(f"Bästa CV F1-score: {grid.best_score_:.4f}")
+best_model = grid.best_estimator_
+
+#Det man kom fram till
+prediction = best_model.predict(X_test)
 
 print("Confusion Matrix:")
 print(pd.crosstab(prediction, y_test, rownames=['Predicted'], colnames=['Actual']))
