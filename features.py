@@ -10,19 +10,8 @@ from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
 
-url = 'training_data_VT2026.csv'
-features = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
-
-def heat_index(T_C, RH): # Steadman heat index formula
-    # Convert to Fahrenheit
-    T_F = T_C * 9/5 + 32
-    HI_F = (-42.379 + 2.04901523*T_F + 10.14333127*RH 
-            - 0.22475541*T_F*RH - 0.00683783*T_F**2 
-            - 0.05481717*RH**2 + 0.00122874*T_F**2*RH 
-            + 0.00085282*T_F*RH**2 - 0.00000199*T_F**2*RH**2)
-    # Convert back to Celsius
-    return (HI_F - 32) * 5/9
 
 def combined_features():
     url = 'training_data_VT2026.csv'
@@ -32,7 +21,7 @@ def combined_features():
         (features["precip"] > 1) |
         (features["snowdepth"] > 0) |
         (features["windspeed"] > 32) |
-        (features["visibility"] < 16),
+        (features["visibility"] < 15.9),
         1,  # bad condition
         0   # good condition
     )
@@ -60,3 +49,18 @@ def combined_features():
     #features["heat_index"] = heat_index(features["temp"], features["humidity"])
 
     return features
+
+
+def train_test_data(selected_features, test_size=0.25, random_state=0):
+    df = combined_features()[selected_features + ["increase_stock"]].dropna()
+    X = df.drop(columns=["increase_stock"])
+    y = (df["increase_stock"] == "high_bike_demand").astype(int)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=test_size,
+        random_state=random_state,
+        stratify=y
+    )
+
+    return X_train, X_test, y_train, y_test
