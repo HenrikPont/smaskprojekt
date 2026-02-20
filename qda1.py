@@ -6,7 +6,6 @@ import sklearn.preprocessing as skl_pre
 import sklearn.linear_model as skl_lm
 import sklearn.discriminant_analysis as skl_da
 import sklearn.neighbors as skl_nb
-from sklearn import model_selection as ms
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV
 
@@ -22,8 +21,6 @@ selected_features = [
     'month_sin', 'month_cos',
     'bad_conditions',
 ]
-
-
 
 X_train, X_test, y_train, y_test = features.train_test_data(selected_features, random_state=0)
 
