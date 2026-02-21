@@ -14,8 +14,6 @@ import features
 #Hämta faeatures
 bikes = features.combined_features()
 
-#selected_features = ['hour_of_day', 'day_of_week', 'month', 'temp', 'dew', 'humidity', 'precip', 'snowdepth', 'windspeed', 'visibility']
-
 selected_features = [
     'weather_pca1', 'weather_pca2', 
     'hour_sin', 'hour_cos',
@@ -61,7 +59,6 @@ print(f"Bästa tröskel: {best_threshold:.2f} med F1-score: {f1_scores[best_idx]
 
 
 #Det man kom fram till
-#prediction = best_model.predict(X_test)
 prediction = (probabilities >= best_threshold).astype(int)
 
 print("Confusion Matrix:")
