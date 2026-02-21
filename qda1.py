@@ -14,12 +14,15 @@ import features
 #Hämta faeatures
 bikes = features.combined_features()
 
+#selected_features = ['hour_of_day', 'day_of_week', 'month', 'temp', 'dew', 'humidity', 'precip', 'snowdepth', 'windspeed', 'visibility']
+
 selected_features = [
     'weather_pca1', 'weather_pca2', 
     'hour_sin', 'hour_cos',
     'day_sin', 'day_cos',
     'month_sin', 'month_cos',
     'bad_conditions',
+    'summertime',
 ]
 
 X_train, X_test, y_train, y_test = features.train_test_data(selected_features, random_state=0)
@@ -42,7 +45,7 @@ print(f"Bästa parametrar: {grid.best_params_}")
 print(f"Bästa CV F1-score: {grid.best_score_:.4f}")
 best_model = grid.best_estimator_
 
-
+#Threshold grejer
 probabilities = best_model.predict_proba(X_test)[:, 1]
 thresholds = np.arange(0.1, 0.9, 0.01)
 f1_scores = []
