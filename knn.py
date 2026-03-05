@@ -14,7 +14,7 @@ selected_features = [
     "weather_pca1", "weather_pca2", "bad_conditions", "summertime", "hour_cos", "hour_sin", "day_sin","day_cos"
 ]
 
-X_train, X_test, Y_train, Y_test = features.train_test_data(selected_features, random_state=0)
+X_train, X_test, Y_train, Y_test = features.train_test_data(selected_features, random_state=2)
 
 
 pipe = Pipeline([
