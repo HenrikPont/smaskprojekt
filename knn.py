@@ -2,23 +2,17 @@ import numpy as np
 import pandas as pd
 
 from imblearn.pipeline import Pipeline
-from imblearn.over_sampling import SMOTE
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, f1_score
 from sklearn.model_selection import GridSearchCV
-from sklearn.feature_selection import SelectKBest, f_classif
 
 import features
 
-
-
-
 selected_features = [
-    #"weather_pca1", "weather_pca2", "bad_conditions", "summertime", "hour_cos", "hour_sin", "day_sin", "day_cos", "month_sin", "month_cos", "weekday"
     "weather_pca1", "weather_pca2", "bad_conditions", "summertime", "hour_cos", "hour_sin", "day_sin","day_cos"
-] #Removed "snow"
+]
 
 X_train, X_test, Y_train, Y_test = features.train_test_data(selected_features, random_state=0)
 
@@ -32,9 +26,9 @@ pipe = Pipeline([
 #Grid search for KNN parameters
 
 param_grid = {
-    "knn__n_neighbors": [5, 7, 9, 11, 15, 21, 25, 26, 27, 28, 29, 31, 33, 35, 37, 39],
+    "knn__n_neighbors": [5, 7, 9, 11, 15, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39],
     "knn__weights": ["uniform", "distance"],
-    "knn__metric": ["euclidean", "manhattan"]
+    "knn__metric": ["euclidean", "manhattan", "minkowski", "chebyshev"]
 }
 
 grid = GridSearchCV(
@@ -64,6 +58,7 @@ for t in thresholds:
 
 best_idx = np.argmax(f1_scores)
 best_threshold = thresholds[best_idx]
+
 best_threshold = 0.4 # Chosen based on observed F1 scores and class balance
 
 print("\nBest threshold:", best_threshold)
