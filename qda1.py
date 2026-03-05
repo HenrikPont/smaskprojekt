@@ -11,7 +11,7 @@ from sklearn.model_selection import GridSearchCV
 
 import features 
 
-#Hämta faeatures
+# --- Hämta features ---
 bikes = features.combined_features()
 
 selected_features = [
@@ -23,9 +23,9 @@ selected_features = [
     'summertime',
 ]
 
-X_train, X_test, y_train, y_test = features.train_test_data(selected_features, random_state=0)
+X_train, X_test, y_train, y_test = features.train_test_data(selected_features, random_state=2)
 
-#Gridsearch 
+# --- Gridsearch ---
 reg_params = np.linspace(0, 0.5, 100) 
 priors = [[p, 1-p] for p in np.linspace(0.1, 0.9, 9)] + [None]  
 
@@ -43,7 +43,7 @@ print(f"Bästa parametrar: {grid.best_params_}")
 print(f"Bästa CV F1-score: {grid.best_score_:.4f}")
 best_model = grid.best_estimator_
 
-#Threshold grejer
+# --- Threshold grejer ---
 probabilities = best_model.predict_proba(X_test)[:, 1]
 thresholds = np.arange(0.1, 0.9, 0.01)
 f1_scores = []
