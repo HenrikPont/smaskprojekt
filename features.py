@@ -40,13 +40,11 @@ def combined_features():
     features['hour_sin'] = np.sin(2*np.pi*features['hour_of_day'] /24)
     features['hour_cos'] = np.cos(2*np.pi*features['hour_of_day'] /24)
 
-    features['month_sin'] = np.sin(2*np.pi*(features['month']-1) /12)
-    features['month_cos'] = np.cos(2*np.pi*(features['month']-1) /12)
+    features['month_sin'] = np.sin(2*np.pi*(features['month']) /12)
+    features['month_cos'] = np.cos(2*np.pi*(features['month']) /12)
 
     features['day_sin'] = np.sin(2*np.pi*(features['day_of_week']) /7)
     features['day_cos'] = np.cos(2*np.pi*(features['day_of_week']) /7)
-
-    #features["heat_index"] = heat_index(features["temp"], features["humidity"])
 
     return features
 
