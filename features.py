@@ -13,7 +13,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 
-def combined_features():
+def combined_features(pca_inputs=[0,1,2]):
     url = 'training_data_VT2026.csv'
     features = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
     
@@ -26,15 +26,13 @@ def combined_features():
         0   # good condition
     )
 
-
     pca_features = features[["temp", "dew", "humidity"]]
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(pca_features)
     pca = PCA(n_components=3)
     components = pca.fit_transform(X_scaled)
-    features["weather_pca1"] = components[:, 0]
-    features["weather_pca2"] = components[:, 1]
-    features["weather_pca3"] = components[:, 2]
+    for i in pca_inputs:
+        features[f'weather_pca{i+1}'] = components[:, i]  
     print("Explained variance ratio:", pca.explained_variance_ratio_)
 
     features['hour_sin'] = np.sin(2*np.pi*features['hour_of_day'] /24)
