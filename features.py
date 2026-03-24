@@ -13,10 +13,11 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 
-def combined_features(pca_inputs=[0,1,2]):
+def combined_features(pca_inputs=[0,1,2]): 
     url = 'training_data_VT2026.csv'
     features = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
     
+    # Create 'bad_conditions' feature based on weather conditions
     features["bad_conditions"] = np.where(
         (features["precip"] > 1) |
         (features["snowdepth"] > 0) |
@@ -26,6 +27,7 @@ def combined_features(pca_inputs=[0,1,2]):
         0   # good condition
     )
 
+    # Perform PCA on weather-related features
     pca_features = features[["temp", "dew", "humidity"]]
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(pca_features)
@@ -35,6 +37,7 @@ def combined_features(pca_inputs=[0,1,2]):
         features[f'weather_pca{i+1}'] = components[:, i]  
     print("Explained variance ratio:", pca.explained_variance_ratio_)
 
+    # Create cyclical features for hour, month, and day of week
     features['hour_sin'] = np.sin(2*np.pi*features['hour_of_day'] /24)
     features['hour_cos'] = np.cos(2*np.pi*features['hour_of_day'] /24)
 
@@ -47,6 +50,7 @@ def combined_features(pca_inputs=[0,1,2]):
     return features
 
 
+# Function to prepare training and testing data
 def train_test_data(selected_features, test_size=0.25, random_state=0):
     df = combined_features()[selected_features + ["increase_stock"]].dropna()
     X = df.drop(columns=["increase_stock"])

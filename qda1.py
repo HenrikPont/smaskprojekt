@@ -6,7 +6,7 @@ from sklearn.model_selection import GridSearchCV
 
 import features 
 
-# --- Hämta features ---
+# --- Load and prepare data ---
 bikes = features.combined_features()
 
 selected_features = [
@@ -38,7 +38,7 @@ print(f"Bästa parametrar: {grid.best_params_}")
 print(f"Bästa CV F1-score: {grid.best_score_:.4f}")
 best_model = grid.best_estimator_
 
-# --- Threshold grejer ---
+# --- Threshold ---
 probabilities = best_model.predict_proba(X_test)[:, 1]
 thresholds = np.arange(0.1, 0.9, 0.01)
 f1_scores = []
@@ -53,7 +53,7 @@ best_threshold = thresholds[best_idx]
 print(f"Bästa tröskel: {best_threshold:.2f} med F1-score: {f1_scores[best_idx]:.4f}")
 
 
-#Det man kom fram till
+# --- Results ---
 prediction = (probabilities >= best_threshold).astype(int)
 
 print("Confusion Matrix:")
