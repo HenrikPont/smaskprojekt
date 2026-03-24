@@ -28,12 +28,13 @@ pipe = Pipeline([
 
 model = pipe.fit(X, y)
 
-#Predict on test data -----------------------------------------------------------------------
 
+#Predict on test data -----------------------------------------------------------------------
 
 url = 'test_data_VT2026.csv'
 X_test = pd.read_csv(url, na_values='?', dtype={'ID': str}).dropna()
 
+# Create 'bad_conditions' feature based on weather conditions
 X_test["bad_conditions"] = np.where(
     (X_test["precip"] > 1) |
     (X_test["snowdepth"] > 0) |
@@ -43,6 +44,7 @@ X_test["bad_conditions"] = np.where(
     0   # good condition
 )
 
+# Perform PCA on weather-related features
 pca_features = X_test[["temp", "dew", "humidity"]]
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(pca_features)
@@ -52,6 +54,7 @@ X_test["weather_pca1"] = components[:, 0]
 X_test["weather_pca2"] = components[:, 1]
 X_test["weather_pca3"] = components[:, 2]
 
+# Create cyclical features for hour, month, and day of week
 X_test['hour_sin'] = np.sin(2*np.pi*X_test['hour_of_day'] /24)
 X_test['hour_cos'] = np.cos(2*np.pi*X_test['hour_of_day'] /24)
 
@@ -61,6 +64,8 @@ X_test['month_cos'] = np.cos(2*np.pi*(X_test['month']) /12)
 X_test['day_sin'] = np.sin(2*np.pi*(X_test['day_of_week']) /7)
 X_test['day_cos'] = np.cos(2*np.pi*(X_test['day_of_week']) /7)
 
+
+# Results
 probs = model.predict_proba(X_test[selected_features])[:, 1]
 
 predictions = (probs >= 0.4).astype(int)
