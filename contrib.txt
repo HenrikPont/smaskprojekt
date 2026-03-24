@@ -1,0 +1,4 @@
+Ivar Hammarberg: logistic regression, abstract, introduction, parts of data analysis and model selection
+Ebba Klevås: Tree-based models, feature engineering
+Elin Matsson: Naive model, QDA, parts of data analysis and model selection
+Henrik Pontoppidan: KNN, parts of data analysis and feature engineering
