@@ -4,10 +4,10 @@ import sklearn.metrics as skl_mt
 import features
 
 selected_features = ['holiday', 'weekday', 'summertime', 'bad_conditions', 'hour_sin', 'hour_cos', 'weather_pca2', 'month_sin', 'month_cos', 'day_sin', 'day_cos']
-
+#selecting all features except those that are combined to create the new features.
 [X_train, X_test, y_train, y_test] = features.train_test_data(selected_features=selected_features)
 
-model = skl_lm.LogisticRegression(max_iter=10000)
+model = skl_lm.LogisticRegression(max_iter=10000, l1_ratio=1) #l1_ratio=1 means that we are using L2 regularization.
 model.fit(X_train, y_train)
 
 y_predict = np.where(model.predict_proba(X_test)[:, 0] > 0.61, 0, 1) #thresholden blir baklänges av ngn anledning ??

@@ -12,8 +12,6 @@ bikes["increase_stock_num"] = bikes["increase_stock"].map({
     "high_bike_demand": 1
 })
 
-
-
 categorical = ['snow', 'holiday', 'weekday', 'summertime', 'bad_conditions']
 features = bikes.drop(columns=["increase_stock", "increase_stock_num"]).columns
 
@@ -41,6 +39,7 @@ for col in features:
         ax.legend(title="increase_stock")
 
     else:
+        # Boxplot for numerical features
         bikes.boxplot(
             column=col,
             by="increase_stock_num",
